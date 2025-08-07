@@ -13,3 +13,30 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+odel User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  tasks     Task[]
+  categories Category[]
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  status      String   @default("pending")
+  categoryId  Int?
+  userId      Int
+  category    Category? @relation(fields: [categoryId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  tasks     Task[]
+}
